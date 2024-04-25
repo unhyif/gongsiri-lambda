@@ -7,12 +7,12 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "ES2020",
-    "outDir": "lib"
-  },
-  "baseUrl": ".",
-  "paths": {
-    "@functions/*": ["./src/functions/*"],
-    "@libs/*": ["./src/libs/*"]
+    "outDir": "lib",
+    "baseUrl": "./src",
+    "paths": {
+      "@functions/*": ["./functions/*"],
+      "@libs/*": ["./libs/*"]
+    }
   },
   "include": ["src/**/*.ts", "serverless.ts"],
   "exclude": [

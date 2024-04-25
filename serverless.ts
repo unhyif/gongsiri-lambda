@@ -1,7 +1,8 @@
 import type { AWS } from '@serverless/typescript';
-import { hello } from '@functions/hello';
+import hello from '@functions/hello';
 
 const serverlessConfiguration: AWS = {
+  useDotenv: true,
   service: 'gongsiri-lambda',
   frameworkVersion: '3',
   plugins: ['serverless-esbuild'],

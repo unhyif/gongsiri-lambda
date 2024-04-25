@@ -1,14 +1,15 @@
 import type { AWS } from '@serverless/typescript';
-import hello from '@functions/hello';
+import getHouseList from '@functions/getHouseList';
 
 const serverlessConfiguration: AWS = {
   useDotenv: true,
   service: 'gongsiri-lambda',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
-    runtime: 'nodejs14.x',
+    region: 'ap-northeast-2',
+    runtime: 'nodejs20.x',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -19,7 +20,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { hello },
+  functions: { getHouseList },
   package: { individually: true },
   custom: {
     esbuild: {

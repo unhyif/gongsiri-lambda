@@ -14,6 +14,23 @@ const serverlessConfiguration: AWS = {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: [
+              'dynamodb:PutItem',
+              'dynamodb:Get*',
+              'dynamodb:Scan*',
+              'dynamodb:UpdateItem',
+              'dynamodb:DeleteItem',
+            ],
+            Resource: process.env.HOUSE_TABLE_ARN,
+          },
+        ],
+      },
+    },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
@@ -32,6 +49,24 @@ const serverlessConfiguration: AWS = {
       define: { 'require.resolve': undefined },
       platform: 'node',
       concurrency: 10,
+    },
+  },
+  resources: {
+    Resources: {
+      HouseTable: {
+        Type: 'AWS::DynamoDB::Table',
+        Properties: {
+          AttributeDefinitions: [
+            { AttributeName: 'area', AttributeType: 'S' },
+            { AttributeName: 'name', AttributeType: 'S' },
+          ],
+          KeySchema: [
+            { AttributeName: 'area', KeyType: 'HASH' },
+            { AttributeName: 'name', KeyType: 'RANGE' },
+          ],
+          TableName: process.env.HOUSE_TABLE,
+        },
+      },
     },
   },
 };

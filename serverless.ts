@@ -1,5 +1,6 @@
 import type { AWS } from '@serverless/typescript';
-import getHouseList from '@functions/getHouseList';
+
+import crawlLatestAnnouncement from '@functions/crawlLatestAnnouncement';
 
 const serverlessConfiguration: AWS = {
   useDotenv: true,
@@ -26,7 +27,7 @@ const serverlessConfiguration: AWS = {
               'dynamodb:UpdateItem',
               'dynamodb:DeleteItem',
             ],
-            Resource: process.env.HOUSE_TABLE_ARN,
+            Resource: '${env:HOUSE_TABLE_ARN}',
           },
         ],
       },
@@ -37,7 +38,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { getHouseList },
+  functions: { crawlLatestAnnouncement },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -56,15 +57,10 @@ const serverlessConfiguration: AWS = {
       HouseTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
-          AttributeDefinitions: [
-            { AttributeName: 'area', AttributeType: 'S' },
-            { AttributeName: 'name', AttributeType: 'S' },
-          ],
-          KeySchema: [
-            { AttributeName: 'area', KeyType: 'HASH' },
-            { AttributeName: 'name', KeyType: 'RANGE' },
-          ],
-          TableName: process.env.HOUSE_TABLE,
+          AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'N' }],
+          BillingMode: 'PAY_PER_REQUEST',
+          KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
+          TableName: '${env:HOUSE_TABLE}',
         },
       },
     },

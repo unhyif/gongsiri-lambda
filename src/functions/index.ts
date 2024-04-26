@@ -1,1 +1,1 @@
-export { default as getHouseList } from './getHouseList';
+export { default as crawlLatestAnnouncement } from './crawlLatestAnnouncement';

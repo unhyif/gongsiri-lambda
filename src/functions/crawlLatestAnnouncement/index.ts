@@ -5,4 +5,5 @@ export default {
   timeout: 600,
   handler: `${handlerPath(__dirname)}/handler.crawlLatestAnnouncement`,
   events: [{ schedule: 'cron(0 0-9 ? * MON-FRI *)' }],
+  maximumRetryAttempts: 0,
 };

@@ -79,11 +79,21 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       retriever,
     });
 
-    const { answer } = await retrievalChain.invoke({
-      input: '',
-      format_instructions: parser.getFormatInstructions(),
-    });
-    const { title = null, createdAt = null } = answer;
+    let data = {};
+
+    try {
+      const { answer } = await retrievalChain.invoke({
+        input: '',
+        format_instructions: parser.getFormatInstructions(),
+      });
+      data = answer;
+      // TODO
+    } catch (e) {
+      console.log(house.name, e);
+    }
+
+    // @ts-ignore
+    const { title = null, createdAt = null } = data;
 
     const updateCommand = new UpdateCommand({
       TableName: process.env.HOUSE_TABLE,
@@ -95,7 +105,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
         ':latestAnnouncement': { title, createdAt },
       },
     });
-    console.log({ title, answer });
+    console.log(house.name, data);
 
     await docClient.send(updateCommand);
   }

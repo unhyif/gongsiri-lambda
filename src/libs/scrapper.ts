@@ -1,8 +1,21 @@
+import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer';
 import { reduceTokensFromHtml } from './string';
 
 export const scrapMainContent = async (url: string) => {
-  const browser = await puppeteer.launch();
+  const isLocal = !process.env.AWS_EXECUTION_ENV;
+
+  const browser = await puppeteer.launch(
+    isLocal
+      ? undefined
+      : {
+          args: chromium.args,
+          executablePath: await chromium.executablePath(
+            'https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar'
+          ),
+        }
+  );
+
   const page = await browser.newPage();
 
   try {

@@ -1,5 +1,4 @@
 import type { AWS } from '@serverless/typescript';
-
 import crawlLatestAnnouncement from '@functions/crawlLatestAnnouncement';
 
 const serverlessConfiguration: AWS = {
@@ -43,7 +42,7 @@ const serverlessConfiguration: AWS = {
   custom: {
     esbuild: {
       bundle: true,
-      minify: false,
+      minify: true,
       sourcemap: true,
       exclude: ['aws-sdk'],
       target: 'node14',

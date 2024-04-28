@@ -89,7 +89,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       data = answer;
       // TODO
     } catch (e) {
-      console.log(house.name, e);
+      console.log('Error', house.id, e);
     }
 
     // @ts-ignore
@@ -105,7 +105,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
         ':latestAnnouncement': { title, createdAt },
       },
     });
-    console.log(house.name, data);
+    console.log('Done', house.id, data);
 
     await docClient.send(updateCommand);
   }

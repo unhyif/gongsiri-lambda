@@ -105,9 +105,9 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
         ':latestAnnouncement': { title, createdAt },
       },
     });
-    console.log('Done', house.id, data);
 
     await docClient.send(updateCommand);
+    console.log('Done', house.id, data);
   }
 
   // TODO: 함수 분리

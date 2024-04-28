@@ -1,4 +1,5 @@
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
+import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   ScanCommand,
@@ -11,7 +12,6 @@ import {
 
 import { APIGatewayEvent } from 'aws-lambda';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { StructuredOutputParser } from '@langchain/core/output_parsers';
@@ -109,4 +109,15 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
 
     await docClient.send(updateCommand);
   }
+
+  // TODO: 함수 분리
+  const putCommand = new PutItemCommand({
+    TableName: process.env.EXTRA_DATA_TABLE,
+    Item: {
+      name: { S: 'updatedAt' },
+      value: { N: String(Date.now()) },
+    },
+    ReturnValues: 'NONE',
+  });
+  await docClient.send(putCommand);
 };

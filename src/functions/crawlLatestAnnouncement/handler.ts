@@ -116,10 +116,13 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
     Key: {
       name: 'updatedAt',
     },
-    UpdateExpression: 'set value = :value',
+    ExpressionAttributeNames: {
+      '#val': 'value',
+    },
     ExpressionAttributeValues: {
       ':value': Date.now(),
     },
+    UpdateExpression: 'set #val = :value',
     ReturnValues: 'NONE',
   });
   await docClient.send(updateCommand);

@@ -7,11 +7,11 @@ export interface BaseHouse {
   announcementUrl: string | null;
 }
 
-export interface House extends BaseHouse {
-  latestAnnouncement: Announcement;
-}
-
 export interface Announcement {
   title: string | null;
   createdAt: string | null;
+}
+
+export interface House extends BaseHouse {
+  latestAnnouncement: Announcement;
 }

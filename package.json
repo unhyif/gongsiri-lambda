@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.563.0",
-    "@aws-sdk/client-s3": "^3.563.0",
     "@aws-sdk/lib-dynamodb": "^3.563.0",
     "@langchain/core": "^0.1.60",
     "@langchain/openai": "^0.0.28",
@@ -23,7 +22,6 @@
     "@sparticuz/chromium-min": "119.0.2",
     "langchain": "^0.1.36",
     "puppeteer": "21.5.0",
-    "puppeteer-core": "21.5.0",
     "zod": "^3.23.4"
   },
   "devDependencies": {

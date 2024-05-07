@@ -56,19 +56,19 @@ const serverlessConfiguration: AWS = {
       HouseTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
+          TableName: '${env:HOUSE_TABLE}',
+          KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
           AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'N' }],
           BillingMode: 'PAY_PER_REQUEST',
-          KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
-          TableName: '${env:HOUSE_TABLE}',
         },
       },
       ExtraDataTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
+          TableName: '${env:EXTRA_DATA_TABLE}',
+          KeySchema: [{ AttributeName: 'name', KeyType: 'HASH' }],
           AttributeDefinitions: [{ AttributeName: 'name', AttributeType: 'S' }],
           BillingMode: 'PAY_PER_REQUEST',
-          KeySchema: [{ AttributeName: 'name', KeyType: 'HASH' }],
-          TableName: '${env:EXTRA_DATA_TABLE}',
         },
       },
     },

@@ -25,8 +25,12 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
   const docClient = DynamoDBDocumentClient.from(client);
 
   const scanCommand = new ScanCommand({
-    ProjectionExpression: 'id, announcementUrl',
     TableName: process.env.HOUSE_TABLE,
+    FilterExpression: 'isCrawlable = :value',
+    ExpressionAttributeValues: {
+      ':value': true,
+    },
+    ProjectionExpression: 'id, announcementUrl',
   });
 
   const { Items: houses } = await docClient.send(scanCommand);
@@ -104,10 +108,11 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       ExpressionAttributeValues: {
         ':latestAnnouncement': { title, createdAt },
       },
+      ReturnValues: 'NONE',
     });
 
     await docClient.send(updateCommand);
-    console.log('Done', house.id, data);
+    console.log('Ok', house.id, data);
   }
 
   // TODO: 함수 분리
@@ -116,14 +121,15 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
     Key: {
       name: 'updatedAt',
     },
+    UpdateExpression: 'set #value = :value',
     ExpressionAttributeNames: {
-      '#val': 'value',
+      '#value': 'value',
     },
     ExpressionAttributeValues: {
       ':value': Date.now(),
     },
-    UpdateExpression: 'set #val = :value',
     ReturnValues: 'NONE',
   });
+
   await docClient.send(updateCommand);
 };

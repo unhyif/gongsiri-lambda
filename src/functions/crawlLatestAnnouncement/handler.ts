@@ -2,6 +2,7 @@ import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import {
   DynamoDBDocumentClient,
   ScanCommand,
+  ScanCommandOutput,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import {
@@ -16,6 +17,8 @@ import {
 import { APIGatewayEvent } from 'aws-lambda';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { House } from '@/types/house';
+import { ListResponse } from '@/types/database';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { StructuredOutputParser } from '@langchain/core/output_parsers';
@@ -23,6 +26,15 @@ import { createRetrievalChain } from 'langchain/chains/retrieval';
 import { createStuffDocumentsChain } from 'langchain/chains/combine_documents';
 import { scrapMainContent } from '@libs/scrapper';
 import { z } from 'zod';
+
+type Answer = z.infer<typeof answerSchema>;
+
+const answerSchema = z
+  .object({
+    title: z.string().nullish().describe('최신 공지사항 제목'),
+    createdAt: z.string().nullish().describe('최신 공지사항 날짜'),
+  })
+  .describe('최신 공지사항 정보');
 
 export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
   const client = new DynamoDBClient({});
@@ -37,7 +49,12 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
     ProjectionExpression: 'id, announcementUrl',
   });
 
-  const { Items: houses } = await docClient.send(scanCommand);
+  const { Items: houses } = (await docClient.send(
+    scanCommand
+  )) as unknown as ListResponse<
+    ScanCommandOutput,
+    Pick<House, 'id' | 'announcementUrl'>
+  >;
 
   // TODO: temperature 확인
   const model = new ChatOpenAI({
@@ -49,14 +66,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
     ['system', latestAnnouncementSystemPrompt],
     ['human', latestAnnouncementHumanPrompt],
   ]);
-  const parser = StructuredOutputParser.fromZodSchema(
-    z
-      .object({
-        title: z.string().nullish().describe('최신 공지사항 제목'),
-        createdAt: z.string().nullish().describe('최신 공지사항 날짜'),
-      })
-      .describe('최신 공지사항 정보')
-  );
+  const parser = StructuredOutputParser.fromZodSchema(answerSchema);
   // const fixParser = OutputFixingParser.fromLLM(model, parser);
 
   const documentChain = await createStuffDocumentsChain({
@@ -87,7 +97,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       retriever,
     });
 
-    let data = {};
+    let data: Answer = {};
 
     try {
       const { answer } = await retrievalChain.invoke({
@@ -100,8 +110,12 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       console.log('Error', house.id, e);
     }
 
-    // @ts-ignore
-    const { title = null, createdAt = null } = data;
+    const { title, createdAt } = data;
+
+    const latestAnnouncement = {
+      title: title ? formatAnnouncementTitle(title) : null,
+      createdAt: createdAt ? formatAnnouncementCreatedAt(createdAt) : null,
+    };
 
     const updateCommand = new UpdateCommand({
       TableName: process.env.HOUSE_TABLE,
@@ -110,16 +124,13 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       },
       UpdateExpression: 'set latestAnnouncement = :latestAnnouncement',
       ExpressionAttributeValues: {
-        ':latestAnnouncement': {
-          title: title ? formatAnnouncementTitle(title) : null,
-          createdAt: createdAt ? formatAnnouncementCreatedAt(createdAt) : null,
-        },
+        ':latestAnnouncement': latestAnnouncement,
       },
       ReturnValues: 'NONE',
     });
 
     await docClient.send(updateCommand);
-    console.log('Ok', house.id, data);
+    console.log('Ok', house.id, latestAnnouncement);
   }
 
   // TODO: 함수 분리

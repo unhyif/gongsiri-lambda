@@ -5,6 +5,10 @@ import {
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import {
+  formatAnnouncementCreatedAt,
+  formatAnnouncementTitle,
+} from '@libs/string';
+import {
   latestAnnouncementHumanPrompt,
   latestAnnouncementSystemPrompt,
 } from '@llm/prompts';
@@ -106,7 +110,10 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
       },
       UpdateExpression: 'set latestAnnouncement = :latestAnnouncement',
       ExpressionAttributeValues: {
-        ':latestAnnouncement': { title, createdAt },
+        ':latestAnnouncement': {
+          title: title ? formatAnnouncementTitle(title) : null,
+          createdAt: createdAt ? formatAnnouncementCreatedAt(createdAt) : null,
+        },
       },
       ReturnValues: 'NONE',
     });

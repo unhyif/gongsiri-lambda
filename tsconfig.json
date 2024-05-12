@@ -11,9 +11,9 @@
     "baseUrl": "./src",
     "paths": {
       "@functions/*": ["./functions/*"],
-      "@libs/*": ["./libs/*"],
       "@llm/*": ["./llm/*"],
       "@/types/*": ["./types/*"],
+      "@utils/*": ["./utils/*"],
       "~/*": ["./*"]
     }
   },

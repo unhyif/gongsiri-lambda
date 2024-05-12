@@ -8,7 +8,7 @@ import {
 import {
   formatAnnouncementCreatedAt,
   formatAnnouncementTitle,
-} from '@libs/string';
+} from '@utils/string';
 import {
   latestAnnouncementHumanPrompt,
   latestAnnouncementSystemPrompt,
@@ -24,7 +24,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { StructuredOutputParser } from '@langchain/core/output_parsers';
 import { createRetrievalChain } from 'langchain/chains/retrieval';
 import { createStuffDocumentsChain } from 'langchain/chains/combine_documents';
-import { scrapMainContent } from '@libs/scrapper';
+import { scrapMainContent } from '@utils/scrapper';
 import { z } from 'zod';
 
 type Answer = z.infer<typeof answerSchema>;

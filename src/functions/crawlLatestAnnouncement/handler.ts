@@ -81,9 +81,9 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
   const embeddings = new OpenAIEmbeddings();
 
   for (const house of houses) {
-    const html = house.announcementUrl
-      ? (await scrapMainContent(house.announcementUrl)) ?? ''
-      : '';
+    if (!house.announcementUrl) continue;
+
+    const html = await scrapMainContent(house.announcementUrl);
 
     const splittedDocs = await splitter.createDocuments([html]);
     const vectorstore = await MemoryVectorStore.fromDocuments(

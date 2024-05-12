@@ -84,6 +84,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
     if (!house.announcementUrl) continue;
 
     const html = await scrapMainContent(house.announcementUrl);
+    if (!html) continue;
 
     const splittedDocs = await splitter.createDocuments([html]);
     const vectorstore = await MemoryVectorStore.fromDocuments(

@@ -58,6 +58,7 @@ export const crawlLatestAnnouncement = async (e: APIGatewayEvent) => {
 
   // TODO: temperature 확인
   const model = new ChatOpenAI({
+    model: 'gpt-4o-mini',
     temperature: 0,
     cache: true,
     maxRetries: 3,

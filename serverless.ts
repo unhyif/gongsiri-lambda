@@ -4,8 +4,7 @@ import crawlLatestAnnouncement from '@functions/crawlLatestAnnouncement';
 const serverlessConfiguration: AWS = {
   useDotenv: true,
   service: 'gongsiri-lambda',
-  frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-dotenv-plugin'],
+  plugins: ['serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
     region: 'ap-northeast-2',

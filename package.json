@@ -13,28 +13,28 @@
     "node": ">=14.15.0"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.623.0",
-    "@aws-sdk/lib-dynamodb": "^3.623.0",
-    "@langchain/core": "^0.2.20",
-    "@langchain/openai": "^0.2.5",
-    "@middy/core": "^5.4.5",
-    "@middy/http-json-body-parser": "^5.4.5",
-    "@sparticuz/chromium-min": "126.0.0",
-    "langchain": "^0.2.12",
-    "puppeteer": "22.15.0",
+    "@aws-sdk/client-dynamodb": "^3.665.0",
+    "@aws-sdk/lib-dynamodb": "^3.665.0",
+    "@langchain/core": "^0.3.7",
+    "@langchain/openai": "^0.3.5",
+    "@middy/core": "^5.5.0",
+    "@middy/http-json-body-parser": "^5.5.0",
+    "@sparticuz/chromium-min": "129.0.0",
+    "langchain": "^0.3.2",
+    "puppeteer": "23.5.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.38.0",
-    "@types/aws-lambda": "^8.10.142",
-    "@types/node": "^22.1.0",
-    "esbuild": "^0.23.0",
-    "json-schema-to-ts": "^3.1.0",
-    "serverless": "^4.1.19",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.7.4",
+    "esbuild": "^0.24.0",
+    "json-schema-to-ts": "^3.1.1",
+    "serverless": "^4.4.4",
     "serverless-dotenv-plugin": "^6.0.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

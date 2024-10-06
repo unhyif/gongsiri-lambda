@@ -1,5 +1,5 @@
-import type { AWS } from '@serverless/typescript';
 import crawlLatestAnnouncement from '@functions/crawlLatestAnnouncement';
+import type { AWS } from '@serverless/typescript';
 
 const serverlessConfiguration: AWS = {
   useDotenv: true,
@@ -20,8 +20,8 @@ const serverlessConfiguration: AWS = {
             Effect: 'Allow',
             Action: [
               'dynamodb:PutItem',
-              'dynamodb:Get*',
-              'dynamodb:Scan*',
+              'dynamodb:GetItem',
+              'dynamodb:Scan',
               'dynamodb:UpdateItem',
               'dynamodb:DeleteItem',
             ],
@@ -35,20 +35,12 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
     },
   },
-  // import the function via paths
-  functions: { crawlLatestAnnouncement },
-  package: { individually: true },
-  custom: {
-    esbuild: {
-      bundle: true,
-      minify: true,
-      sourcemap: true,
-      exclude: ['aws-sdk'],
-      target: 'node14',
-      define: { 'require.resolve': undefined },
-      platform: 'node',
-      concurrency: 10,
-    },
+  functions: {
+    crawlLatestAnnouncement,
+  },
+  package: {
+    individually: true,
+    patterns: ['!node_modules/**'],
   },
   resources: {
     Resources: {
